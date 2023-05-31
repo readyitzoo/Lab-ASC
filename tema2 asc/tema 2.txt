@@ -1,0 +1,161 @@
+.data
+    n: .long 0
+    m: .long 0
+    nr_elemente: .long 0
+    pozitie: .long 0
+    minus_unu: .long -1
+    v_aparitie: .space 1000
+    # v_pozitie: .space 200
+    sir_input: .space 1000
+    k: .space 8
+    x: .space 8
+    imin: .space 8  # intre imin si imax verificam daca exista k
+    imax: .space 8  #
+    caracter: .asciz " "
+    afisare: .asciz "%d "
+    Newline: .asciz "\n"
+.text
+
+.global main
+
+egal_zero:
+    xorl %ebx, %ebx
+    movl %ebx, %ecx
+    jmp for_solve
+
+solve:
+    pushl %ebp
+    movl %esp, %ebp
+    pushl %edi
+    movl 8(%ebp), %edi
+    movl 12(%ebp), %ecx
+
+    movl $1, k  # elementul pe care incercam sa-l punem pe poz i
+    movl %ecx, %ebx
+    movl %ecx, imax
+    addl m, %ebx
+    subl m, %ebx
+    movl %ebx, %ecx
+    cmp $0, %ebx
+    jl egal_zero
+
+
+for_solve:
+    cmp imax, %ecx
+    je solve_exit
+    movl n, %ebx
+    cmp k, %ebx
+    je eroare
+    movl (%edi, %ecx, 4), %ebx
+    cmp k, %ebx
+    je incl_k
+
+    
+eroare:
+    pushl minus_unu
+    pushl $afisare
+    call printf
+    popl %ebx
+    popl %ebx
+
+    jmp et_exit
+
+incl_k:
+    addl $1, k
+    jmp for_solve
+    
+solve_exit:
+    popl %edi
+    popl %ebp
+    ret
+
+
+verificare: # intre i-m, i+m pt orice nr (0 sau numar)
+
+main:
+    # citire:
+
+    pushl $sir_input
+    call gets
+    popl %ebx
+
+    pushl $caracter
+    pushl $sir_input
+    call strtok
+    popl %ebx
+    popl %ebx
+
+    pushl %eax
+    call atoi
+    popl %ebx
+
+    movl %eax, n
+
+    movl $3, %eax
+    mull n
+    movl %eax, nr_elemente
+
+    pushl $caracter
+    pushl $0
+    call strtok
+    popl %ebx
+    popl %ebx
+
+    pushl %eax
+    call atoi
+    popl %ebx
+
+    movl %eax, m
+    xorl %ecx, %ecx
+
+for_citire:
+    cmp nr_elemente, %ecx
+    je iesire_for
+    pushl %ecx
+
+    pushl $caracter
+    pushl $0
+    call strtok
+    popl %ebx
+    popl %ebx
+
+    pushl %eax
+    call atoi
+    popl %ebx
+
+    popl %ecx
+
+    movl $v_aparitie, %edi
+    movl %eax, (%edi, %ecx, 4)
+
+    incl %ecx
+    jmp for_citire
+
+iesire_for:
+
+    pushl $v_aparitie
+    pushl pozitie
+    call solve
+    popl %ebx
+    popl %ebx
+
+    pushl minus_unu
+    pushl $afisare
+    call printf
+    popl %ebx
+    popl %ebx
+
+et_exit:
+    pushl $0
+    call fflush
+    popl %ebx
+
+    movl $4, %eax
+	movl $1, %ebx
+	movl $Newline, %ecx
+	movl $2, %edx
+	int $0x80
+
+    movl $1, %eax
+    xorl %ebx, %ebx
+    int $0x80

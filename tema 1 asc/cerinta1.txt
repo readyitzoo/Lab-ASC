@@ -1,0 +1,247 @@
+.data
+
+	sum: .long 0
+    op: .long 16
+	input: .space 1000
+    formatScanf: .asciz "%s"
+    formatPrintf: .asciz "%d " 
+	formatPrintf2: .asciz "-%d " 
+	formatCaracter: .asciz "%c "
+	formatNewline: .asciz "\n"
+    AfisLet: .asciz "let "
+    AfisAdd: .asciz "add "
+    AfisSub: .asciz "sub " 
+    AfisMul: .asciz "mul "
+    AfisDiv: .asciz "div "
+    minus: .asciz "-"
+    
+.text
+
+.global main
+
+main:
+    #citire
+    pushl $input
+	pushl $formatScanf
+    call scanf
+    popl %ebx
+	popl %ebx
+
+    movl $input, %edi
+    xorl %ecx, %ecx
+
+et_for:
+    movl $0, sum
+    xorl %eax, %eax
+    xorl %ebx, %ebx
+    xorl %edx, %edx
+    movb (%edi, %ecx, 1), %al
+    cmp $0, %eax
+    je et_exit
+
+et_numar0: 
+    cmp $65, %eax
+    jge et_lit0
+	subl $48, %eax
+    mull op
+    mull op
+    addl %eax, sum
+et_numar1: 
+	xorl %eax, %eax
+    incl %ecx
+    movb (%edi, %ecx, 1), %al
+    cmp $65, %eax
+    jge et_lit1
+	subl $48, %eax
+    mull op
+    addl %eax, sum
+et_numar2:
+	xorl %eax, %eax
+    incl %ecx
+    movb (%edi, %ecx, 1), %al
+    cmp $65, %eax
+    jge et_lit2
+	subl $48, %eax
+    addl %eax, sum
+    jmp et_afisare
+    
+et_lit0:
+    sub $55, %eax
+    mull op
+    mull op
+    add %eax, sum
+    jmp et_numar1
+et_lit1:
+    sub $55, %eax
+    mull op
+    add %eax, sum
+    jmp et_numar2
+et_lit2:
+    sub $55, %eax
+    add %eax, sum
+
+et_afisare:
+	incl %ecx
+    movl sum, %ebx
+
+    cmp $2303, %ebx
+    jle afisare_nrpoz
+
+    cmp $2559, %ebx
+    jle afisare_nrneg
+
+    cmp $2682, %ebx
+    jle afisare_var
+
+    jmp afisare_operatie
+
+afisare_nrpoz:
+    subl $2048, %ebx
+
+	pushl %ecx
+    pushl %ebx
+	pushl $formatPrintf
+	call printf
+	popl %ebx
+	popl %ebx
+	popl %ecx
+	
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+  	jmp et_for
+afisare_nrneg:
+	subl $2304, %ebx
+	
+	pushl %ecx
+	pushl %ebx
+	pushl $formatPrintf2
+	call printf
+	popl %ebx
+	popl %ebx
+	popl %ecx
+
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+afisare_var:
+	subl $2560, %ebx
+	
+	pushl %ecx
+	pushl %ebx
+	pushl $formatCaracter
+	call printf
+	popl %ebx
+	popl %ebx
+	popl %ecx
+
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+afisare_operatie:
+	cmp $3072, %ebx
+	je et_afislet
+	
+	cmp $3073, %ebx
+	je et_afisadd
+	
+	cmp $3074, %ebx
+	je et_afissub
+	
+	cmp $3075, %ebx
+	je et_afismul
+	
+	cmp $3076, %ebx
+	je et_afisdiv
+	
+et_afislet:
+	pushl %ecx
+	pushl $AfisLet
+	call printf
+	popl %ebx
+	popl %ecx
+	
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+et_afisadd:
+	pushl %ecx
+	pushl $AfisAdd
+	call printf
+	popl %ebx
+	popl %ecx
+	
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+et_afissub:
+	pushl %ecx
+	pushl $AfisSub
+	call printf
+	popl %ebx
+	popl %ecx
+	
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+et_afismul:
+	pushl %ecx
+	pushl $AfisMul
+	call printf
+	popl %ebx
+	popl %ecx
+
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+et_afisdiv:
+	pushl %ecx
+	pushl $AfisDiv
+	call printf
+	popl %ebx
+	popl %ecx
+	
+	pushl %ecx
+	push $0
+	call fflush
+	pop %ebx
+	popl %ecx
+
+	jmp et_for
+et_exit:     
+	movl $4, %eax
+	movl $1, %ebx
+	movl $formatNewline, %ecx
+	movl $2, %edx
+	int $0x80
+
+    movl $1, %eax
+    xorl %ebx, %ebx 
+    int $0x80

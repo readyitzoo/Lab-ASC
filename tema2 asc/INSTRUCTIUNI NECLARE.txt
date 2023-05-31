@@ -1,0 +1,53 @@
+tema 2 asc
+
+ce e de facut?
+
+cea mai mica permutare in care fiecare element apare de exact 3 ori.
+
+ce ne trebuie?
+
+vector de aparitie de 90 elemente. daca valoarea este 3 in a[x] trecem peste el. x
+.space 400
+
+verificam daca trb afișat - 1
+adică daca apare vreun element mai mare decât n sau daca avem mai mult de n elemente in input.
+
+vector de poziție pt elemente. 
+
+verificam daca i - p[k] >= m ( k fiind el. pe care vrem sa l punem in solutie) si mai verificam in sir_input de la i+1 la i+m inclusiv daca se gaseste k.
+Daca merge, punen in soluție k si modificam p[k] cu i.
+si crestem cu 1 p[k]
+daca nu. crestem k cu 1 si verificam din nou.
+
+
+Cod:
+
+la citire punem in vectorul de apariție si de poziție valorile si reținem in sir_input permutarea inițială.
+
+in parcurgere, daca dam de 0 verificam ce putem pune, daca dam de ! = 0, verificam care era ultima apariție a lui k in sirul soluție sol si daca distantae invalida, păstrăm pana la sol (poz(k)-1) si incercam cu următorul element, k+1.
+
+posibila optimizare:
+
+când punem ceva in sol, verificam de la sir_input(i) pana la sir_input(i+m) avem cumva k si daca avem, nu punem, creștem k cu 1
+
+
+OBSERVATIE: INAINTE DE ORICE VERIFICARE PENTRU K IN VECTOR, VERIFICAM A[K] < 3
+
+solve (i
+sterge (i, p[i]
+
+afis_-1
+
+avem numar:
+verificam de la i-m pana la i+m daca avem k, daca avem, oprim programul si afisam -1
+daca nu avem k in i, i+m, punem in p[k] i si crestem a[k] cu 1
+
+avem zero:
+verificam daca i-p[k] > m
+verificam de la i-m pana la i+m daca avem k, daca avem crestem k;
+daca k>n, :
+stergem elementele adaugate de la p[k] si incercam cu k+1 daca p[k] exista
+altfel stergem elementul precedent si punem ceva mai mare
+daca p[k] = -1,
+daca nu avem k in i, i+m, punem in p[k] i si crestem a[k] cu 1
+

@@ -1,0 +1,69 @@
+.data
+    n: .space 8
+    auto: .long 0
+    doi: .long 2
+    trei: .long 3
+    formatscanf: .asciz "%d"
+    formatprintf: .asciz "%d\n"
+.text
+
+.global main
+
+f:
+    pushl %ebp
+    mov %esp, %ebp
+    
+    movl 8(%ebp), %eax
+    cmp $1, %eax
+    je iesire_f
+    incl auto
+    xorl %edx, %edx
+    divl doi
+    cmp $0, %edx
+    je f_par
+    jmp f_impar
+
+
+f_par:
+    
+    pushl %eax
+    call f
+    popl %ebx
+    jmp iesire_f
+f_impar:
+    movl 8(%ebp), %eax
+    mull trei
+    addl $1, %eax
+
+    pushl %eax
+    call f
+    popl %ebx
+
+    jmp iesire_f
+
+iesire_f:
+    popl %ebp
+    ret
+
+main:
+    # citire:
+    pushl $n
+    pushl $formatscanf
+    call scanf
+    popl %ebx
+    popl %ebx
+
+    pushl n
+    call f
+    popl %ebx
+
+    pushl auto
+    pushl $formatprintf
+    call printf
+    popl %ebx
+    popl %ebx
+
+et_exit:
+    movl $1, %eax
+    xorl %ebx, %ebx
+    int $0x80
